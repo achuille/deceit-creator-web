@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Deceit skin kits</title>
+  <link rel="icon" href="./logo.png">
+  <link rel="stylesheet" href="./app.css">
+  <script type="module" src="./app.mjs"></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' https://raw.githubusercontent.com; img-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="./" aria-label="Deceit skin kits, home">
+      <img src="./logo.png" alt="" width="28" height="28">
+      <span>Skin kits</span>
+      <small id="version"></small>
+    </a>
+    <button class="icon-btn" type="button" popovertarget="help" aria-label="How to use a kit" title="How to use a kit">?</button>
+  </header>
+
+  <div id="help" class="help" popover role="dialog" aria-label="How to use a kit">
+    <ol>
+      <li><b>Download</b> the kit. GitHub asks you to sign in.</li>
+      <li><b>Extract</b> the ZIP and open <code>Index.html</code>.</li>
+      <li><b>Paint</b> the PSDs. Check the model in Blender.</li>
+    </ol>
+  </div>
+
+  <main class="layout">
+    <aside class="picker" aria-label="Models">
+      <div class="search">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+        <input id="query" type="search" placeholder="Search" aria-label="Search models" aria-controls="models" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="filters">
+        <div class="seg" id="game" role="radiogroup" aria-label="Game">
+          <button type="button" role="radio" data-game="" aria-checked="true">All</button>
+          <button type="button" role="radio" data-game="D1" aria-checked="false">D1</button>
+          <button type="button" role="radio" data-game="D2" aria-checked="false">D2</button>
+        </div>
+        <select id="family" aria-label="Family"><option value="">All families</option></select>
+      </div>
+      <ul id="models" class="models" role="listbox" tabindex="0" aria-label="Models"></ul>
+      <p id="empty" class="empty" hidden>No match</p>
+    </aside>
+
+    <section class="work" aria-label="Preview">
+      <div class="head">
+        <div class="title">
+          <h1 id="name">&nbsp;</h1>
+          <span id="meta" class="meta"></span>
+        </div>
+        <div id="parts" class="seg parts" role="radiogroup" aria-label="Part" hidden></div>
+        <a id="download" class="download" rel="noopener noreferrer" aria-disabled="true">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M3 13h10"/></svg>
+          <span>Download kit</span>
+          <small id="size"></small>
+        </a>
+      </div>
+
+      <div id="stage" class="stage" data-mode="image">
+        <img id="shot" class="shot" alt="" decoding="async">
+        <div id="host" class="host"></div>
+
+        <button id="live" class="live" type="button">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg>
+          <span>3D preview</span>
+        </button>
+
+        <div id="loading" class="status" role="status" aria-live="polite" hidden>
+          <div class="meter"><i id="meter"></i></div>
+          <span id="bytes">Loading</span>
+          <button id="cancel" class="text-btn" type="button">Cancel</button>
+        </div>
+
+        <div id="failure" class="status failure" role="alert" hidden>
+          <span id="reason">3D preview failed.</span>
+          <button id="retry" class="text-btn" type="button">Retry</button>
+          <button id="dismiss" class="text-btn" type="button">Close</button>
+        </div>
+
+        <button id="close-live" class="icon-btn corner" type="button" aria-label="Back to image" title="Back to image" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+      </div>
+
+      <div id="controls" class="controls" hidden>
+        <div id="view" class="seg" role="radiogroup" aria-label="View" hidden>
+          <button type="button" role="radio" data-view="held" aria-checked="false">Hands</button>
+          <button type="button" role="radio" data-view="overview" aria-checked="false">Object</button>
+        </div>
+
+        <div id="motion" class="group" hidden>
+          <select id="action" aria-label="Animation"></select>
+          <button id="action-play" class="icon-btn" type="button" aria-label="Play animation" aria-pressed="false">
+            <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg>
+            <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9"/></svg>
+          </button>
+          <input id="action-seek" class="seek" type="range" min="0" max="1" step="0.01" value="0" aria-label="Animation time">
+          <output id="action-time" class="time">0.00</output>
+        </div>
+
+        <div id="effects" class="group" hidden>
+          <select id="effect" aria-label="Effect"></select>
+          <button id="effect-play" class="icon-btn" type="button" aria-label="Play effect" aria-pressed="false">
+            <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg>
+            <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9"/></svg>
+          </button>
+          <input id="effect-seek" class="seek" type="range" min="0" max="1" step="0.001" value="0" aria-label="Effect phase">
+        </div>
+
+        <button id="fit" class="btn" type="button" title="Fit model to view">Fit</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
